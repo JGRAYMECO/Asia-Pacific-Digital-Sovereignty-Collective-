@@ -468,16 +468,18 @@
       <form id="signup-form"
             action="https://docs.google.com/forms/d/e/1FAIpQLScPE8lbYBTQ5hXqjeW-B4ddGaevktgGB9wZoY6rckPjzSOqdw/formResponse"
             method="post"
-            target="signup-sink">
+            target="_blank">
         <label for="signup-email">Email address</label>
         <div class="field-row">
           <input type="email" id="signup-email" name="entry.1368729677" autocomplete="email" required placeholder="you@institution.edu">
           <button type="submit">Subscribe</button>
         </div>
+        <input type="hidden" name="fvv" value="1">
+        <input type="hidden" name="pageHistory" value="0">
         <p class="consent">We use your address only to send these updates, and never share it. Email us to be removed at any time.</p>
       </form>
       <p class="thanks" id="signup-thanks" role="status" hidden>Thank you — you're on the list.</p>
-      <iframe name="signup-sink" title="Form submission target" hidden></iframe>
+
     </div>
   </div>
 </section>
@@ -492,16 +494,30 @@
 <script>
   (function () {
     var form = document.getElementById('signup-form');
-    var sink = document.getElementsByName('signup-sink')[0];
     var thanks = document.getElementById('signup-thanks');
-    if (!form || !sink || !thanks) return;
-    var submitted = false;
-    form.addEventListener('submit', function () { submitted = true; });
-    sink.addEventListener('load', function () {
-      if (!submitted) return;              // ignore the iframe's initial load
-      form.hidden = true;
-      thanks.hidden = false;
-      thanks.focus && thanks.focus();
+    if (!form || !thanks) return;
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var field = document.getElementById('signup-email');
+      if (!field || !field.value) return;
+
+      var body = new URLSearchParams();
+      body.append('entry.1368729677', field.value);
+      body.append('fvv', '1');
+      body.append('pageHistory', '0');
+
+      fetch(form.action, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body.toString()
+      }).catch(function () {
+        /* no-cors responses are opaque; failures here are not readable */
+      }).then(function () {
+        form.hidden = true;
+        thanks.hidden = false;
+      });
     });
   })();
 </script>
