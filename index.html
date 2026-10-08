@@ -491,5 +491,36 @@
 </footer>
 
 
+<script>
+  (function () {
+    var form = document.getElementById('signup-form');
+    var thanks = document.getElementById('signup-thanks');
+    var field = document.getElementById('signup-email');
+    if (!form || !thanks || !field) return;   // no JS: form still posts to Google normally
+
+    form.addEventListener('submit', function (e) {
+      if (!field.value) return;
+      e.preventDefault();
+
+      var body = new URLSearchParams();
+      body.append('entry.1144837522', field.value);
+      body.append('fvv', '1');
+      body.append('pageHistory', '0');
+
+      fetch(form.action, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body.toString()
+      }).then(function () {
+        form.hidden = true;
+        thanks.hidden = false;
+      }).catch(function () {
+        form.submit();            // fall back to the plain Google tab
+      });
+    });
+  })();
+</script>
+
 </body>
 </html>
