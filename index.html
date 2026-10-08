@@ -478,7 +478,6 @@
         <input type="hidden" name="pageHistory" value="0">
         <p class="consent">We use your address only to send these updates, and never share it. Email us to be removed at any time.</p>
       </form>
-      <p class="thanks" id="signup-thanks" role="status" hidden>Thank you — you're on the list.</p>
 
     </div>
   </div>
@@ -491,36 +490,6 @@
   </div>
 </footer>
 
-<script>
-  (function () {
-    var form = document.getElementById('signup-form');
-    var thanks = document.getElementById('signup-thanks');
-    if (!form || !thanks) return;
-
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var field = document.getElementById('signup-email');
-      if (!field || !field.value) return;
-
-      var body = new URLSearchParams();
-      body.append('entry.1368729677', field.value);
-      body.append('fvv', '1');
-      body.append('pageHistory', '0');
-
-      fetch(form.action, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: body.toString()
-      }).catch(function () {
-        /* no-cors responses are opaque; failures here are not readable */
-      }).then(function () {
-        form.hidden = true;
-        thanks.hidden = false;
-      });
-    });
-  })();
-</script>
 
 </body>
 </html>
